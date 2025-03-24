@@ -3,9 +3,20 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useDispatch, useSelector } from '../../services/store';
+import { TRootReducer } from '../../services/types';
+import { fetchIngredients } from '../../utils/burger-slice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
+  const ingredientsList = useSelector(
+    (store: TRootReducer) => store.burgerApi.ingredients
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, []);
+
+  /** TODO: взять переменные из стора useSelector */
   const buns: TIngredient[] = [];
   const mains: TIngredient[] = [];
   const sauces: TIngredient[] = [];

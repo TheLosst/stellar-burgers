@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
+import { TRootReducer } from 'src/services/types';
 
-const ProtectedRoute = ({ children }) => {
-  const user = useSelector((state) => state.user);
+const ProtectedRoute = ({ children }: { children: ReactElement }) => {
+  const user = useSelector((state: TRootReducer) => state.user);
   let location = useLocation();
 
   if (!user.state.isAuthenticated) {
