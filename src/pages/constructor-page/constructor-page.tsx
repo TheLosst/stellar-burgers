@@ -1,23 +1,34 @@
-import { useDispatch, useSelector } from '../../services/store';
+import { AppDispatch, useDispatch, useSelector } from '../../services/store';
 
 import styles from './constructor-page.module.css';
 
 import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { TRootReducer } from '../../services/types';
 import { fetchIngredients } from '../../utils/burger-slice';
 
 export const ConstructorPage: FC = () => {
   /** TODO: взять переменную из стора */
-  const isIngredientsLoading = useSelector(
-    (store: TRootReducer) => store.burgerApi.ingredientsStatus === 'loading'
-  );
+  const [isLoading, setIsLoading] = useState(true);
 
+  const isIngredientsLoading = useSelector(
+    (store: TRootReducer) => store.burgerApi.ingredientsStatus
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+  useEffect(() => {
+    console.log(isLoading, isIngredientsLoading);
+    if (isLoading && isIngredientsLoading === 'succeeded') {
+      setIsLoading(false);
+    }
+  }, [isIngredientsLoading]);
   return (
     <>
-      {isIngredientsLoading ? (
+      {isLoading ? (
         <Preloader />
       ) : (
         <main className={styles.containerMain}>

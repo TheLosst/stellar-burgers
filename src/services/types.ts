@@ -1,7 +1,12 @@
 import { TConstructorIngredient, TIngredient, TUser } from '@utils-types';
 
 export type TBurgerApiReducer = {
-  ingredients: Array<TIngredient>;
+  ingredients: {
+    buns: Array<TIngredient>;
+    mains: Array<TIngredient>;
+    sauces: Array<TIngredient>;
+  };
+  ingredientList: Array<TIngredient>;
   ingredientsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 };
 

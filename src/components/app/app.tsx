@@ -79,7 +79,7 @@ const App = () => (
           />
           <Route path='*' element={<NotFound404 />} />
           <Route path='/feed/:number' element={<OrderInfo />} />
-          <Route path='/ingredients/:id' element={<IngredientDetails />} />
+          {/* <Route path='/ingredients/:id' element={<IngredientDetails(id) />} /> */}
           <Route
             path='/profile/orders/:number'
             element={
