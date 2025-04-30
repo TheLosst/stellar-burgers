@@ -1,5 +1,11 @@
 import { TConstructorIngredient, TIngredient, TUser } from '@utils-types';
 
+export type TPickedIngridients = {
+  bunTop: TIngredient | null | undefined;
+  main: TConstructorIngredient[];
+  bunBottom: TIngredient | null | undefined;
+};
+
 export type TBurgerApiReducer = {
   ingredients: {
     buns: Array<TIngredient>;
@@ -8,6 +14,7 @@ export type TBurgerApiReducer = {
   };
   ingredientList: Array<TIngredient>;
   ingredientsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  pickedIngridients: TPickedIngridients;
 };
 
 export type TUserState = TUser & {
