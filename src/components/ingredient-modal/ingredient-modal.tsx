@@ -7,7 +7,7 @@ export const IngredientModal: FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const handleClose = () => {
-    navigate(-1); // Возвращаемся на предыдущую страницу
+    navigate('/'); // Возвращаемся на главную страницу
   };
 
   if (!id) {

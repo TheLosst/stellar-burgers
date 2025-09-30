@@ -1,7 +1,6 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 import { Link, useLocation } from 'react-router-dom';
-import { TRootReducer } from '../../services/types';
 import {
   BurgerIcon,
   ListIcon,
@@ -11,7 +10,7 @@ import {
 import styles from './app-header.module.css';
 
 export const AppHeader: FC = () => {
-  const user = useSelector((state: TRootReducer) => state.user);
+  const user = useSelector((state) => state.user);
   const location = useLocation();
 
   return (

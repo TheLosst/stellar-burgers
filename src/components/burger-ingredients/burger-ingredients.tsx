@@ -3,17 +3,15 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from '../../services/store';
 import { fetchIngredients } from '../../utils/burger-slice';
-import { AppDispatch } from 'src/services/store';
 import {
   selectIngredients,
   selectIngredientsStatus
 } from '../../utils/selectors';
-import { useSelector } from '../../services/store';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const ingredients = useSelector(selectIngredients);
   const ingredientsStatus = useSelector(selectIngredientsStatus);
 

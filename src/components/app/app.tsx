@@ -25,9 +25,8 @@ import ProtectedRoute from '../../utils/ProtectedRoute';
 import OnlyAuth from '../../utils/OnlyAuth';
 
 import { Provider } from 'react-redux';
-import store from '../../services/store';
+import store, { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { getUser } from '../../utils/user-slice';
 import { AppDispatch } from '../../services/store';
 import { fetchIngredients } from '../../utils/burger-slice';
@@ -58,7 +57,7 @@ const ModalRoutes = () => {
 };
 
 const AppRouter = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Загружаем ингредиенты при старте приложения
@@ -158,7 +157,12 @@ const AppRouter = () => {
 
 const App = () => (
   <Provider store={store}>
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <AppRouter />
     </Router>
   </Provider>

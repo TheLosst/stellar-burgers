@@ -1,28 +1,24 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
-import { TRootReducer } from 'src/services/types';
 import { createOrder, resetNewOrder } from '../../utils/orders-slice';
 import { clearConstructor } from '../../utils/burger-slice';
-import { AppDispatch } from '../../services/store';
 
 export const BurgerConstructor: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const pickedIngridientsBunTop = useSelector(
-    (store: TRootReducer) => store.burgerApi.pickedIngridients.bunTop
+    (store) => store.burgerApi.pickedIngridients.bunTop
   );
   const pickedIngridientsMain = useSelector(
-    (store: TRootReducer) => store.burgerApi.pickedIngridients.main
+    (store) => store.burgerApi.pickedIngridients.main
   );
 
-  const user = useSelector((store: TRootReducer) => store.user);
-  const orderState = useSelector(
-    (store: TRootReducer) => store.orders.newOrder
-  );
+  const user = useSelector((store) => store.user);
+  const orderState = useSelector((store) => store.orders.newOrder);
 
   const constructorItems = {
     bun: pickedIngridientsBunTop || null,
@@ -42,13 +38,15 @@ export const BurgerConstructor: FC = () => {
     }
 
     // Собираем ID ингредиентов для заказа
-    const ingredients = [];
+    const ingredients: string[] = [];
     if (constructorItems.bun) {
       ingredients.push(constructorItems.bun._id);
     }
-    constructorItems.ingredients.forEach((ingredient) => {
-      ingredients.push(ingredient._id);
-    });
+    constructorItems.ingredients.forEach(
+      (ingredient: TConstructorIngredient) => {
+        ingredients.push(ingredient._id);
+      }
+    );
     if (constructorItems.bun) {
       ingredients.push(constructorItems.bun._id);
     }

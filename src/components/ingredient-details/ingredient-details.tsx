@@ -2,8 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { TRootReducer } from 'src/services/types';
+import { useSelector } from '../../services/store';
 import { TIngredient } from '@utils-types';
 
 interface IngredientDetailsProps {
@@ -14,12 +13,12 @@ export const IngredientDetails: FC<IngredientDetailsProps> = ({ id }) => {
   const [ingredientData, setIngredientData] = useState<
     TIngredient | undefined
   >();
-  const ingredientList = useSelector(
-    (store: TRootReducer) => store.burgerApi.ingredientList
-  );
+  const ingredientList = useSelector((store) => store.burgerApi.ingredientList);
   useEffect(() => {
     if (ingredientList?.length) {
-      setIngredientData(ingredientList.find((ele) => ele._id === id));
+      setIngredientData(
+        ingredientList.find((ele: TIngredient) => ele._id === id)
+      );
     }
   }, [id, ingredientList]);
 

@@ -24,6 +24,7 @@ const initialState = {
   },
   ingredientList: [],
   ingredientsStatus: 'idle',
+  ingredientsError: null,
   pickedIngridients: pickedIngridientsInitialState
 } satisfies TBurgerApiReducer as TBurgerApiReducer;
 
@@ -33,8 +34,11 @@ export const fetchIngredients = createAsyncThunk(
     try {
       const data = await getIngredientsApi();
       return data;
-    } catch (error) {
-      return rejectWithValue(error);
+    } catch (error: any) {
+      // Преобразуем ошибку в сериализуемый объект
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -42,9 +46,18 @@ export const fetchIngredients = createAsyncThunk(
 export const setBunTop = createAction<TIngredient>(
   'pickedIngridients/setBunTop'
 );
-export const addMainItem = createAction<TIngredient>(
+export const addMainItem = createAction<TConstructorIngredient>(
   'pickedIngridients/addMainItem'
 );
+
+// Action creator для добавления ингредиента с UUID
+export const addMainItemWithUuid = (ingredient: TIngredient) => {
+  const ingredientWithUuid: TConstructorIngredient = {
+    ...ingredient,
+    id: uuidv4()
+  };
+  return addMainItem(ingredientWithUuid);
+};
 export const setBunBottom = createAction<TIngredient>(
   'pickedIngridients/setBunBottom'
 );
@@ -82,7 +95,7 @@ export const burgerSlice = createSlice({
       .addCase(addMainItem, (state, action) => {
         state.pickedIngridients.main = [
           ...state.pickedIngridients.main,
-          { ...action.payload, id: uuidv4() }
+          action.payload
         ];
       })
       .addCase(moveUpMainItem, (state, action) => {
@@ -136,12 +149,15 @@ export const burgerSlice = createSlice({
           (ele: TIngredient) => ele.type === 'main'
         );
         state.ingredientsStatus = 'succeeded';
+        state.ingredientsError = null;
       })
       .addCase(fetchIngredients.pending, (state) => {
         state.ingredientsStatus = 'loading';
+        state.ingredientsError = null;
       })
-      .addCase(fetchIngredients.rejected, (state) => {
+      .addCase(fetchIngredients.rejected, (state, action) => {
         state.ingredientsStatus = 'failed';
+        state.ingredientsError = action.payload as string;
       });
   }
 });

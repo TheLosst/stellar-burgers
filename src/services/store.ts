@@ -8,7 +8,17 @@ import {
 import rootReducer from './reducer';
 
 const store = configureStore({
-  reducer: rootReducer
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== 'production',
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Игнорировать эти пути в проверке сериализации
+        ignoredActionPaths: ['payload.timestamp'],
+        // Игнорировать эти типы действий полностью
+        ignoredActions: ['persist/PERSIST']
+      }
+    })
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

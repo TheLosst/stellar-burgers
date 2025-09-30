@@ -20,6 +20,7 @@ export type TBurgerApiReducer = {
   };
   ingredientList: Array<TIngredient>;
   ingredientsStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  ingredientsError: string | null;
   pickedIngridients: TPickedIngridients;
 };
 
