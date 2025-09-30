@@ -11,8 +11,6 @@ interface IngredientDetailsProps {
 }
 
 export const IngredientDetails: FC<IngredientDetailsProps> = ({ id }) => {
-  /** TODO: взять переменную из стора */
-
   const [ingredientData, setIngredientData] = useState<
     TIngredient | undefined
   >();

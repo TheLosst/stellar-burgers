@@ -14,6 +14,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const handleAdd = () => {
       if (ingredient.type === 'bun') {
         store.dispatch(setBunTop(ingredient));
+        store.dispatch(setBunBottom(ingredient));
       } else {
         store.dispatch(addMainItem(ingredient));
       }

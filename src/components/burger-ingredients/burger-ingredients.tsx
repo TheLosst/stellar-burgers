@@ -3,21 +3,23 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useDispatch, useSelector } from 'react-redux';
-import { TRootReducer } from '../../services/types';
+import { useDispatch } from 'react-redux';
 import { fetchIngredients } from '../../utils/burger-slice';
 import { AppDispatch } from 'src/services/store';
-import useUpdateEffect from '../../utils/hooks';
+import {
+  selectIngredients,
+  selectIngredientsStatus
+} from '../../utils/selectors';
+import { useSelector } from '../../services/store';
 
 export const BurgerIngredients: FC = () => {
-  const ingredientsList = useSelector(
-    (store: TRootReducer) => store.burgerApi.ingredients
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const ingredients = useSelector(selectIngredients);
+  const ingredientsStatus = useSelector(selectIngredientsStatus);
 
-  /** TODO: взять переменные из стора useSelector */
-  const buns: TIngredient[] = ingredientsList.buns;
-  const mains: TIngredient[] = ingredientsList.mains;
-  const sauces: TIngredient[] = ingredientsList.sauces;
+  const buns: TIngredient[] = ingredients.buns;
+  const mains: TIngredient[] = ingredients.mains;
+  const sauces: TIngredient[] = ingredients.sauces;
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -35,6 +37,13 @@ export const BurgerIngredients: FC = () => {
   const [saucesRef, inViewSauces] = useInView({
     threshold: 0
   });
+
+  // Загружаем ингредиенты при монтировании компонента
+  useEffect(() => {
+    if (ingredientsStatus === 'idle') {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredientsStatus]);
 
   useEffect(() => {
     if (inViewBuns) {

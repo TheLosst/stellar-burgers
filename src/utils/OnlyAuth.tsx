@@ -5,13 +5,14 @@ import { TRootReducer } from 'src/services/types';
 import { getUser } from './user-slice';
 import { AppDispatch } from '../services/store';
 
-const ProtectedRoute = ({ children }: { children: ReactElement }) => {
+// Компонент для маршрутов, доступных только НЕавторизованным пользователям
+const OnlyAuth = ({ children }: { children: ReactElement }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: TRootReducer) => state.user);
   const location = useLocation();
 
   useEffect(() => {
-    // Проверяем токен при загрузке защищенного маршрута
+    // Проверяем токен при загрузке
     if (localStorage.getItem('accessToken') && !user.state.isAuthenticated) {
       dispatch(getUser());
     }
@@ -22,12 +23,13 @@ const ProtectedRoute = ({ children }: { children: ReactElement }) => {
     return <div>Загрузка...</div>;
   }
 
-  // Если пользователь не авторизован
-  if (!user.state.isAuthenticated) {
-    return <Navigate to='/login' state={{ from: location }} replace />;
+  // Если пользователь авторизован, перенаправляем назад или на главную
+  if (user.state.isAuthenticated) {
+    const from = location.state?.from?.pathname || '/';
+    return <Navigate to={from} replace />;
   }
 
   return children;
 };
 
-export default ProtectedRoute;
+export default OnlyAuth;

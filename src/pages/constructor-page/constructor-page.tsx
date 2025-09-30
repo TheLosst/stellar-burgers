@@ -10,7 +10,6 @@ import { TRootReducer } from '../../services/types';
 import { fetchIngredients } from '../../utils/burger-slice';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
   const [isLoading, setIsLoading] = useState(true);
 
   const isIngredientsLoading = useSelector(
@@ -21,7 +20,6 @@ export const ConstructorPage: FC = () => {
     dispatch(fetchIngredients());
   }, [dispatch]);
   useEffect(() => {
-    console.log(isLoading, isIngredientsLoading);
     if (isLoading && isIngredientsLoading === 'succeeded') {
       setIsLoading(false);
     }

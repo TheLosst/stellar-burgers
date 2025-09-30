@@ -55,10 +55,14 @@ export const removeMainItem = createAction<TConstructorIngredient>(
 );
 export const clearBunBottom = createAction('pickedIngridients/clearBunBottom');
 
-export const moveUpMainItem = createAction<TIngredient>(
+export const clearConstructor = createAction(
+  'pickedIngridients/clearConstructor'
+);
+
+export const moveUpMainItem = createAction<TConstructorIngredient>(
   'pickedIngridients/moveUpMainItem'
 );
-export const moveDownMainItem = createAction(
+export const moveDownMainItem = createAction<TConstructorIngredient>(
   'pickedIngridients/moveDownMainItem'
 );
 
@@ -82,47 +86,43 @@ export const burgerSlice = createSlice({
         ];
       })
       .addCase(moveUpMainItem, (state, action) => {
-        const tempItem = state.pickedIngridients.main.find(
-          (element) => element._id === action.payload._id
+        const index = state.pickedIngridients.main.findIndex(
+          (element) => element.id === action.payload.id
         );
-        console.log('action.payload: ' + action.payload._id);
-        console.log('tempItem: ' + tempItem);
-        if (tempItem) {
-          const index = state.pickedIngridients.main.indexOf(tempItem);
-          console.log('index: ' + index);
-          if (index) {
-            const newArray = [...state.pickedIngridients.main];
-            const temp = newArray[index - 1];
-            newArray[index - 1] = tempItem;
-            newArray[index] = temp;
-            state.pickedIngridients.main = newArray;
-          }
+        if (index > 0) {
+          const newArray = [...state.pickedIngridients.main];
+          const temp = newArray[index - 1];
+          newArray[index - 1] = newArray[index];
+          newArray[index] = temp;
+          state.pickedIngridients.main = newArray;
+        }
+      })
+      .addCase(moveDownMainItem, (state, action) => {
+        const index = state.pickedIngridients.main.findIndex(
+          (element) => element.id === action.payload.id
+        );
+        if (index < state.pickedIngridients.main.length - 1) {
+          const newArray = [...state.pickedIngridients.main];
+          const temp = newArray[index + 1];
+          newArray[index + 1] = newArray[index];
+          newArray[index] = temp;
+          state.pickedIngridients.main = newArray;
         }
       })
 
       .addCase(removeMainItem, (state, action) => {
-        const newArray = [...state.pickedIngridients.main].filter(
-          (ele: TConstructorIngredient) => ele._id === action.payload._id
-        );
-        console.log('action.payload.id: ' + action.payload.id);
-        newArray.forEach((e) =>
-          console.log('state.pickedIngridients.main: ' + e.id)
-        );
-        ///////////////////////////////ДОДЕЛАТЬ УДАЛЕНИЕ А ТАК_ЖЕ ПЕРЕМЕЩЕНИЕ ОБЪЕКТОВ
         state.pickedIngridients.main = state.pickedIngridients.main.filter(
-          (element) => {
-            element.id != action.payload.id;
-          }
+          (element) => element.id !== action.payload.id
         );
-        // state.pickedIngridients.main = state.pickedIngridients.main.filter(
-        //   (element) => {
-        //     element._id !== action.payload._id;
       })
       .addCase(setBunBottom, (state, action) => {
         state.pickedIngridients.bunBottom = action.payload;
       })
       .addCase(clearBunBottom, (state) => {
         state.pickedIngridients.bunBottom = null;
+      })
+      .addCase(clearConstructor, (state) => {
+        state.pickedIngridients = pickedIngridientsInitialState;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.ingredientList = action.payload;
