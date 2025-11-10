@@ -5,15 +5,23 @@ import styles from './constructor-page.module.css';
 import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
-  const isIngredientsLoading = false;
+  const [isLoading, setIsLoading] = useState(true);
 
+  const isIngredientsLoading = useSelector(
+    (store) => store.burgerApi.ingredientsStatus
+  );
+
+  useEffect(() => {
+    if (isLoading && isIngredientsLoading === 'succeeded') {
+      setIsLoading(false);
+    }
+  }, [isIngredientsLoading, isLoading]);
   return (
     <>
-      {isIngredientsLoading ? (
+      {isLoading ? (
         <Preloader />
       ) : (
         <main className={styles.containerMain}>
