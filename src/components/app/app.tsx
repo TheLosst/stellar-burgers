@@ -15,7 +15,8 @@ import {
   Profile,
   ProfileOrders,
   NotFound404,
-  IngredientPage
+  IngredientPage,
+  OrderPage
 } from '@pages';
 import { AppHeader, IngredientModal, OrderModal, ReduxDemo } from '@components';
 
@@ -25,55 +26,55 @@ import ProtectedRoute from '../../utils/ProtectedRoute';
 import OnlyAuth from '../../utils/OnlyAuth';
 
 import { Provider } from 'react-redux';
-import store, { useDispatch } from '../../services/store';
-import { useEffect } from 'react';
+import store, { useDispatch, useSelector } from '../../services/store';
+import { useEffect, useState } from 'react';
 import { getUser } from '../../utils/user-slice';
-import { AppDispatch } from '../../services/store';
 import { fetchIngredients } from '../../utils/burger-slice';
-
-// Компонент для модальных окон
-const ModalRoutes = () => {
-  const location = useLocation();
-
-  // Показываем модальные окна если есть background в state
-  const showModal = location.state?.background;
-
-  if (!showModal) return null;
-
-  return (
-    <>
-      {location.pathname.includes('/feed/') &&
-        location.pathname.match(/\/feed\/\d+$/) && <OrderModal />}
-      {location.pathname.includes('/profile/orders/') &&
-        location.pathname.match(/\/profile\/orders\/\d+$/) && (
-          <ProtectedRoute>
-            <OrderModal />
-          </ProtectedRoute>
-        )}
-      {location.pathname.includes('/ingredients/') &&
-        location.pathname.match(/\/ingredients\/[^/]+$/) && <IngredientModal />}
-    </>
-  );
-};
+import { Preloader } from '@ui';
+import { getCookie } from '../../utils/cookie';
 
 const AppRouter = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const background = location.state?.background;
+  const [isInitialized, setIsInitialized] = useState(false);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
-    // Загружаем ингредиенты при старте приложения
-    dispatch(fetchIngredients());
+    const initApp = async () => {
+      // Загружаем ингредиенты при старте приложения
+      dispatch(fetchIngredients());
 
-    // Проверяем авторизацию если есть токен
-    if (localStorage.getItem('accessToken')) {
-      dispatch(getUser());
-    }
+      // Проверяем авторизацию если есть токен в cookie или refreshToken в localStorage
+      const accessToken = getCookie('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (accessToken || refreshToken) {
+        await dispatch(getUser());
+      }
+
+      setIsInitialized(true);
+    };
+
+    initApp();
   }, [dispatch]);
+
+  // Показываем прелоадер до инициализации
+  if (!isInitialized) {
+    return (
+      <div className={styles.app}>
+        <AppHeader />
+        <Preloader />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
-        {/* Основные роуты */}
+
+      {/* Основные роуты */}
+      <Routes location={background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route path='/redux-demo' element={<ReduxDemo />} />
@@ -130,16 +131,14 @@ const AppRouter = () => {
           }
         />
 
-        {/* Ингредиенты */}
+        {/* Страницы с деталями */}
         <Route path='/ingredients/:id' element={<IngredientPage />} />
-
-        {/* Модальные роуты для заказов */}
-        <Route path='/feed/:number' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderPage />} />
         <Route
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <ProfileOrders />
+              <OrderPage />
             </ProtectedRoute>
           }
         />
@@ -149,8 +148,21 @@ const AppRouter = () => {
         <Route path='*' element={<Navigate to='/not-found' replace />} />
       </Routes>
 
-      {/* Модальные окна отображаются условно */}
-      <ModalRoutes />
+      {/* Модальные окна показываются только при наличии background */}
+      {background && (
+        <Routes>
+          <Route path='/ingredients/:id' element={<IngredientModal />} />
+          <Route path='/feed/:number' element={<OrderModal />} />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <OrderModal />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

@@ -1,14 +1,13 @@
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { Modal, OrderInfo } from '@components';
-import { AppDispatch } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { resetOrderDetails } from '../../utils/orders-slice';
 
 export const OrderModal: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     dispatch(resetOrderDetails()); // Очищаем данные заказа

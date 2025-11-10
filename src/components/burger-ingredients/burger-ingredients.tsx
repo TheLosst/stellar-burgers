@@ -3,15 +3,13 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useDispatch, useSelector } from '../../services/store';
-import { fetchIngredients } from '../../utils/burger-slice';
+import { useSelector } from '../../services/store';
 import {
   selectIngredients,
   selectIngredientsStatus
 } from '../../utils/selectors';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useDispatch();
   const ingredients = useSelector(selectIngredients);
   const ingredientsStatus = useSelector(selectIngredientsStatus);
 
@@ -35,13 +33,6 @@ export const BurgerIngredients: FC = () => {
   const [saucesRef, inViewSauces] = useInView({
     threshold: 0
   });
-
-  // Загружаем ингредиенты при монтировании компонента
-  useEffect(() => {
-    if (ingredientsStatus === 'idle') {
-      dispatch(fetchIngredients());
-    }
-  }, [dispatch, ingredientsStatus]);
 
   useEffect(() => {
     if (inViewBuns) {

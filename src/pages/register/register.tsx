@@ -1,9 +1,8 @@
 import { FC, SyntheticEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { RegisterUI } from '@ui-pages';
 import { registerUser } from '../../utils/user-slice';
-import { AppDispatch } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import { TRootReducer } from '../../services/types';
 
 export const Register: FC = () => {
@@ -11,10 +10,10 @@ export const Register: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { state: userState } = useSelector((state: TRootReducer) => state.user);
+  const { state: userState } = useSelector((state) => state.user);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();

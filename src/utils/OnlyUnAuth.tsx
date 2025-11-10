@@ -1,10 +1,9 @@
 import { ReactElement } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { TRootReducer } from 'src/services/types';
+import { useSelector } from '../services/store';
 
 const OnlyUnAuth = ({ children }: { children: ReactElement }) => {
-  const user = useSelector((state: TRootReducer) => state.user);
+  const user = useSelector((state) => state.user);
   const location = useLocation();
 
   if (user.state.isAuthenticated) {

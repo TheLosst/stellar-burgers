@@ -1,4 +1,4 @@
-import { AppDispatch, useDispatch, useSelector } from '../../services/store';
+import { useSelector } from '../../services/store';
 
 import styles from './constructor-page.module.css';
 
@@ -6,24 +6,19 @@ import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC, useEffect, useState } from 'react';
-import { TRootReducer } from '../../services/types';
-import { fetchIngredients } from '../../utils/burger-slice';
 
 export const ConstructorPage: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const isIngredientsLoading = useSelector(
-    (store: TRootReducer) => store.burgerApi.ingredientsStatus
+    (store) => store.burgerApi.ingredientsStatus
   );
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
+
   useEffect(() => {
     if (isLoading && isIngredientsLoading === 'succeeded') {
       setIsLoading(false);
     }
-  }, [isIngredientsLoading]);
+  }, [isIngredientsLoading, isLoading]);
   return (
     <>
       {isLoading ? (

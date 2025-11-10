@@ -4,6 +4,7 @@ export * from './forgot-password';
 export * from './ingredient';
 export * from './login';
 export * from './not-fount-404';
+export * from './order';
 export * from './profile';
 export * from './profile-orders';
 export * from './register';

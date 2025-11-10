@@ -1,10 +1,7 @@
 import { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../services/store';
-import { useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 
 // Импорт всех thunk функций
-import { fetchIngredients } from '../../utils/burger-slice';
 import { getFeeds } from '../../utils/feed-slice';
 import { getUserOrders } from '../../utils/orders-slice';
 import { getUser } from '../../utils/user-slice';
@@ -26,7 +23,7 @@ import {
  * Показывает загрузку данных из всех слайсов
  */
 export const ReduxDemo: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   // Селекторы для ингредиентов
   const ingredients = useSelector(selectIngredients);
@@ -45,11 +42,6 @@ export const ReduxDemo: FC = () => {
   const user = useSelector(selectUser);
 
   useEffect(() => {
-    // Загружаем ингредиенты
-    if (ingredientsStatus === 'idle') {
-      dispatch(fetchIngredients());
-    }
-
     // Загружаем ленту заказов
     dispatch(getFeeds());
 
@@ -60,7 +52,7 @@ export const ReduxDemo: FC = () => {
     if (isAuthenticated) {
       dispatch(getUserOrders());
     }
-  }, [dispatch, ingredientsStatus, isAuthenticated]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>

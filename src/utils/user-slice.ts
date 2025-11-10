@@ -162,6 +162,9 @@ const userSlice = createSlice({
       .addCase(getUser.rejected, (state) => {
         state.state.isLoading = false;
         state.state.isAuthenticated = false;
+        // Очищаем токены при ошибке получения пользователя
+        localStorage.removeItem('refreshToken');
+        deleteCookie('accessToken');
       })
 
       // UpdateUser cases

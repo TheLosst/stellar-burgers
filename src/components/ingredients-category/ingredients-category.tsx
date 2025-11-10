@@ -1,16 +1,17 @@
 import { forwardRef, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { TIngredientsCategoryProps } from './type';
 import { TIngredient } from '@utils-types';
 import { IngredientsCategoryUI } from '../ui/ingredients-category';
-import { TRootReducer } from '../../services/types';
+import { useSelector } from '../../services/store';
 
 export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
->(({ title, titleRef, ingredients }, ref) => {
+>((props, ref) => {
+  const { title, titleRef, ingredients } = props;
+
   const pickedIngridients = useSelector(
-    (store: TRootReducer) => store.burgerApi.pickedIngridients
+    (store) => store.burgerApi.pickedIngridients
   );
 
   const ingredientsCounters = useMemo(() => {

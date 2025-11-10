@@ -1,13 +1,12 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getUserOrders } from '../../utils/orders-slice';
-import { AppDispatch } from '../../services/store';
 import { selectUserOrders } from '../../utils/selectors';
+import { useDispatch, useSelector } from '../../services/store';
 
 export const ProfileOrders: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const orders = useSelector(selectUserOrders);
 
   useEffect(() => {

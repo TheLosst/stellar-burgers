@@ -1,11 +1,9 @@
 import { FC, useMemo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { AppDispatch } from '../../services/store';
 import { getOrderByNumber } from '../../utils/orders-slice';
 import {
   selectOrderDetails,
@@ -15,7 +13,7 @@ import {
 } from '../../utils/selectors';
 
 export const OrderInfo: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const location = useLocation();
 
   // Получаем номер заказа из pathname
